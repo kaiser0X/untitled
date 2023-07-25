@@ -4,6 +4,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:untitled/page6.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 
 
@@ -256,48 +257,59 @@ class _MenuState extends State<Menu> {
         ),
         itemBuilder: (context, index) {
           var produit = produits[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.blue,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.network(
-                    produit.imagePath, // Utilisez le chemin de l'image du produit
-                    width: 80,
-                    height: 80,
-                  ),
-                  //SizedBox(height: 10.0),
-                  Text(
-                    produit.nom,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProduitDetailPage(produit: produit),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.blue,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.network(
+                      produit.imagePath, // Utilisez le chemin de l'image du produit
+                      width: 80,
+                      height: 80,
                     ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Text(
-                    produit.description,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
+                    //SizedBox(height: 10.0),
+                    Text(
+                      produit.nom,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    '\$${produit.prix.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
+                    SizedBox(height: 15.0),
+                    Text(
+                      produit.description,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 5.0),
+                    Text(
+                      '\$${produit.prix.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+
           );
         },
         itemCount: produits.length,
@@ -324,101 +336,9 @@ class Produit {
 
 
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<ScreenHiddenDrawer> itens = [];
-  Widget FirstSreen() {
-    // Retournez le widget souhaité pour la première écran
-    return Scaffold(
-      // Définissez le contenu de votre première écran ici
-      body: Container(
-        child: Text('Premier écran'),
-      ),
-    );
-  }
-  Widget SecondSreen() {
-    // Retournez le widget souhaité pour la première écran
-    return Scaffold(
-      // Définissez le contenu de votre première écran ici
-      body: Container(
-        child: Text('Premier écran'),
-      ),
-    );
-  }
 
 
-  @override
-  void initState() {
-    itens.add(
-      ScreenHiddenDrawer(
-        ItemHiddenMenu(
-          name: "Screen 1",
-          baseStyle: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 28.0),
-          colorLineSelected: Colors.teal,
-          selectedStyle: TextStyle(color: Colors.red),
-        ),
-        FirstSreen(),
-      ),
-    );
 
-    itens.add(
-      ScreenHiddenDrawer(
-        ItemHiddenMenu(
-          name: "Screen 2",
-          baseStyle: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 28.0),
-          colorLineSelected: Colors.orange,
-          selectedStyle: TextStyle(color: Colors.red),
-        ),
-        SecondSreen(),
-      ),
-    );
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return HiddenDrawerMenu(
-      backgroundColorMenu: Colors.blueGrey,
-      backgroundColorAppBar: Colors.cyan,
-      screens: itens,
-      typeOpen: TypeOpen.FROM_LEFT, // Modifier cette ligne pour choisir la direction d'ouverture du menu
-      enableScaleAnimation: true,
-      enableCornerAnimation: true,
-      slidePercent: 80.0,
-      verticalScalePercent: 80.0,
-      contentCornerRadius: 10.0,
-
-      withAutoTittleName: true,
-      styleAutoTittleName: TextStyle(color: Colors.red),
-      actionsAppBar: <Widget>[],
-      backgroundColorContent: Colors.blue,
-      elevationAppBar: 4.0,
-      tittleAppBar: Center(child: Icon(Icons.ac_unit)),
-      enableShadowItensMenu: true,
-      backgroundMenu: DecorationImage(
-        image: ExactAssetImage('assets/bg_news.jpg'),
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-}
 
 
 
