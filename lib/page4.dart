@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:untitled/page6.dart';
+import 'package:untitled/page7.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
-
 
 
 class Karl extends StatelessWidget {
@@ -15,21 +15,7 @@ class Karl extends StatelessWidget {
     return MaterialApp(
       title: "Kaiser Test 2",
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blueAccent [300],
-          elevation: 0,
-          title: Text(' F D T C'),
-          leading: IconButton(onPressed: () {  },
-            icon: Icon(Icons.menu),
-
-          ),
-          actions: [
-            IconButton(onPressed: () {  },
-            icon: Icon(Icons.person),
-            )],
-        ),
-      ),
+   
     );
   }
 }
@@ -40,16 +26,19 @@ class New extends StatefulWidget {
 }
 
 class _NewState extends State<New> {
-  int currentIndex = 0;
+  int currentIndex = 0;// Variable pour contrôler la visibilité de l'AppBar
+  bool showAppBar = true;
 
   Widget getPage(int index) {
     switch (index) {
       case 0:
         return Menu();
       case 1:
-        return Icon(Icons.settings, size: 50);
+        return Recherche();
       case 2:
         return Profil();
+      case 3:
+        return Icon(Icons.settings, size: 50);
       default:
         return Container();
     }
@@ -62,9 +51,8 @@ class _NewState extends State<New> {
     );
   }
 
-  void Coull(BuildContext context) {
-    Scaffold.of(context).openEndDrawer(); // Ouvrir le menu coulissant
-  }
+
+
 
 
   @override
@@ -80,7 +68,6 @@ class _NewState extends State<New> {
         ),
         leading: IconButton(
           onPressed: () {
-            Coull;
           },
           icon: Icon(Icons.menu),
         ),
@@ -100,6 +87,7 @@ class _NewState extends State<New> {
           getPage(0),
           getPage(1),
           getPage(2),
+          getPage(4),
         ],
       ),
       bottomNavigationBar: CurvedNavigationBar(
@@ -108,6 +96,7 @@ class _NewState extends State<New> {
         index: currentIndex,
         items: [
           Icon(Icons.home, color: Colors.white),
+          Icon(Icons.search, color: Colors.white),
           Icon(Icons.settings, color: Colors.white),
           Icon(Icons.person, color: Colors.white),
         ],
@@ -333,6 +322,8 @@ class Produit {
     required this.imagePath,
   });
 }
+
+
 
 
 
