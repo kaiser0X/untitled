@@ -198,6 +198,7 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   List<Produit> produits = []; // Liste des produits à afficher dans la GridView
 
+
   @override
   void initState() {
     super.initState();
@@ -219,6 +220,7 @@ class _MenuState extends State<Menu> {
       List<Produit> listeProduits = [];
       for (var item in data) {
         var produit = Produit(
+
           nom: item['NOM_PROD'],
           description: item['DESCRIP'],
           prix: double.parse(item['PRIX']),
@@ -263,14 +265,20 @@ class _MenuState extends State<Menu> {
                   color: Colors.blue,
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start, // Alignez le contenu en haut de la colonne
                   children: [
-                    Image.network(
-                      produit.imagePath, // Utilisez le chemin de l'image du produit
-                      width: 80,
-                      height: 80,
+                    Expanded(
+                      child: ClipRRect( // Ajoutez ClipRRect pour ajouter des bords arrondis à l'image
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          produit.imagePath, // Utilisez le chemin de l'image du produit
+                          width: 120,
+                          height: 80,
+                          fit: BoxFit.cover, // Ajustez l'image pour qu'elle remplisse l'espace
+                        ),
+                      ),
                     ),
-                    //SizedBox(height: 10.0),
+                    SizedBox(height: 5.0),
                     Text(
                       produit.nom,
                       style: TextStyle(
@@ -278,7 +286,7 @@ class _MenuState extends State<Menu> {
                         fontSize: 16.0,
                       ),
                     ),
-                    SizedBox(height: 15.0),
+                    SizedBox(height: 5.0),
                     Text(
                       produit.description,
                       style: TextStyle(
@@ -298,11 +306,11 @@ class _MenuState extends State<Menu> {
                 ),
               ),
             ),
-
           );
         },
         itemCount: produits.length,
       )
+
 
     );
   }
@@ -310,6 +318,7 @@ class _MenuState extends State<Menu> {
 
 
 class Produit {
+
   final String nom;
   final String description;
   final double prix;
@@ -322,6 +331,11 @@ class Produit {
     required this.imagePath,
   });
 }
+
+
+
+
+
 
 
 

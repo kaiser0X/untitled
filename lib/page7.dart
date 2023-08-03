@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Karl extends StatelessWidget {
   @override
@@ -14,56 +16,122 @@ class Karl extends StatelessWidget {
   }
 }
 
-class Recherche extends StatefulWidget {
-  String? get title => null;
-
-  @override
-  _RechercheState createState() => _RechercheState();
-}
-
-class _RechercheState extends State<Recherche> {
-
+class Recherche extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Recherche"),
         actions: [
-          IconButton(onPressed: (){
-            showSearch(context: context,
-            delegate: CustomSearchDelegate(),);
-          },
-              icon: const Icon(Icons.search),),
+          IconButton(
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
+            icon: const Icon(Icons.search),
+          ),
         ],
       ),
     );
-       // Définissez l'AppBar à null pour masquer l'AppBar lorsque showAppBar est false
   }
 }
 
-class  CustomSearchDelegate extends SearchDelegate {
+
+
+class CustomSearchDelegate extends SearchDelegate {
+  @override
+  Widget buildSuggestions(BuildContext context) {
+
+    final suggestions = <String>["T-shirt", "Tasse", "Casquette", "Gourde", "Banderole", "Roll up"]; // Liste pour stocker les suggestions de recherche
+
+    // Obtenez la chaîne de recherche saisie par l'utilisateur
+    final query = super.query.toLowerCase(); // Utilisez super.query pour accéder à la variable query de SearchDelegate
+
+    // Obtenir les résultats de recherche à partir du serveur PHP
+    getSearchResultsFromServer(query).then((results) {
+      suggestions.addAll(results);
+    }).catchError((error) {
+      // Gérer les erreurs éventuelles lors de la requête HTTP
+      print('Erreur lors de la recherche : $error');
+    });
+
+    // Construire une liste de ListTile pour afficher les suggestions de recherche
+    return ListView(
+      children: suggestions.map((suggestion) {
+        return ListTile(
+          title: Text(suggestion),
+          onTap: () {
+            // Lorsque l'utilisateur appuie sur une suggestion, effectuez l'action souhaitée ici (par exemple, naviguer vers une autre page avec les détails du produit ou de la catégorie).
+            // Vous pouvez utiliser le résultat de la requête pour obtenir les détails du produit ou de la catégorie correspondant à la suggestion sélectionnée.
+            // Remplacez cette action par votre propre action souhaitée.
+            print('Suggestion sélectionnée: $suggestion');
+            close(context, suggestion);
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  // Méthode de requête HTTP pour obtenir les résultats de recherche à partir du serveur
+  Future<List<String>> getSearchResultsFromServer(String query) async {
+    final url = 'http://karlmichel.alwaysdata.net/recherche.php'; // Remplacez par l'URL de votre fichier PHP
+
+    final response = await http.post(
+      Uri.parse(url),
+      body: {
+        'click': 'rech',
+        'query': query,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Analyser les données JSON renvoyées par l'API
+      final data = json.decode(response.body);
+
+      // Traiter les résultats et retourner la liste de noms ou toute autre donnée que vous souhaitez afficher dans les suggestions.
+      List<String> names = [];
+      names.addAll(
+          data['produits'].map((item) => item['NOM_PROD'] as String));
+      names.addAll(
+          data['categories'].map((item) => item['NOM_CAT'] as String));
+
+      return names;
+    } else {
+      // Gérer les erreurs en cas de requête échouée
+      throw Exception('Échec de la requête : ${response.statusCode}');
+    }
+  }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // TODO: implement buildActions
-    throw UnimplementedError();
+    // Ici, vous pouvez retourner une liste de widgets d'actions pour la barre de recherche, si nécessaire.
+    // Par exemple, vous pouvez ajouter un bouton pour effacer le texte de recherche ou filtrer les résultats.
+    return [];
   }
 
   @override
   Widget? buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-    throw UnimplementedError();
+    // Ici, vous pouvez retourner un widget pour l'icône de retour en arrière dans la barre de recherche.
+    // Par exemple, vous pouvez utiliser le widget IconButton avec l'icône de retour en arrière.
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        // Lorsque l'utilisateur appuie sur l'icône de retour en arrière, vous pouvez choisir de fermer simplement la barre de recherche ou d'effectuer une autre action.
+        close(context, null);
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    throw UnimplementedError();
+    // Ici, vous pouvez retourner un widget pour afficher les résultats de la recherche lorsque l'utilisateur soumet sa recherche.
+    // Par exemple, vous pouvez afficher une liste de produits ou de catégories correspondant à la recherche.
+    // Vous pouvez également choisir de rediriger l'utilisateur vers une autre page avec les résultats complets.
+    return Container();
   }
 
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-    throw UnimplementedError();
-  }
-
+// Le reste des méthodes buildActions, buildLeading et buildResults peut rester inchangé pour le moment
+// Vous pouvez les implémenter si vous en avez besoin à l'avenir.
 }
