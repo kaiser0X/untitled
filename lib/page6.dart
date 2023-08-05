@@ -71,6 +71,27 @@ class ProduitDetailPage extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white, // Intérieur des boutons en bleu
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  // Contour des boutons en blanc
+                ),
+                elevation: 9, // Ajout d'une ombre
+                minimumSize: Size(50, 50),
+              ),
+              child: Text(
+                "Commander",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 18,
+                ),
+              ),
+            ),
           ],
         ),
       ),

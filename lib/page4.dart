@@ -4,8 +4,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:untitled/page6.dart';
 import 'package:untitled/page7.dart';
+import 'package:untitled/page8.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 
 
@@ -26,8 +28,7 @@ class New extends StatefulWidget {
 }
 
 class _NewState extends State<New> {
-  int currentIndex = 0;// Variable pour contrôler la visibilité de l'AppBar
-  bool showAppBar = true;
+  int currentIndex = 0;
 
   Widget getPage(int index) {
     switch (index) {
@@ -36,9 +37,9 @@ class _NewState extends State<New> {
       case 1:
         return Recherche();
       case 2:
-        return Profil();
+        return Container();
       case 3:
-        return Icon(Icons.settings, size: 50);
+        return Profil();
       default:
         return Container();
     }
@@ -51,25 +52,24 @@ class _NewState extends State<New> {
     );
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent[300],
         elevation: 4,
-        centerTitle: true, // Ajout de cette ligne pour centrer le titre
+        centerTitle: true,
         title: Text(
           'F D T C',
           textAlign: TextAlign.center,
         ),
-        leading: IconButton(
-          onPressed: () {
-          },
-          icon: Icon(Icons.menu),
+        leading: Builder( // Utiliser un Builder ici
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Utiliser le context du Builder
+            },
+            icon: Icon(Icons.menu),
+          ),
         ),
         actions: [
           IconButton(
@@ -80,16 +80,44 @@ class _NewState extends State<New> {
           ),
         ],
       ),
-
-      body: IndexedStack(
-        index: currentIndex,
-        children: [
-          getPage(0),
-          getPage(1),
-          getPage(2),
-          getPage(4),
-        ],
+      drawer: Drawer(
+        // Le contenu du menu
+        child: ListView(
+          children: [
+            // L'en-tête du menu
+            DrawerHeader(
+              child: Container(
+                width: 200,
+                height: 150,
+                child: Text('Menu'),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            // Les éléments du menu
+            ListTile(
+              leading: Icon(Icons.shopping_basket_outlined),
+              title: Text('Panier'),
+              onTap: () {
+                Navigator.pop(context); // Fermer le menu après avoir cliqué
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PanierPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.notification_add_outlined),
+              title: Text('Notification'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
+      body: getPage(currentIndex),
       bottomNavigationBar: CurvedNavigationBar(
         color: Colors.blueAccent,
         backgroundColor: Colors.transparent,
@@ -98,7 +126,7 @@ class _NewState extends State<New> {
           Icon(Icons.home, color: Colors.white),
           Icon(Icons.search, color: Colors.white),
           Icon(Icons.settings, color: Colors.white),
-          Icon(Icons.person, color: Colors.white),
+          Icon(Icons.add_shopping_cart, color: Colors.white),
         ],
         onTap: (int index) {
           setState(() {
@@ -109,6 +137,7 @@ class _NewState extends State<New> {
     );
   }
 }
+
 
 class Profil extends StatefulWidget {
   @override
@@ -220,7 +249,6 @@ class _MenuState extends State<Menu> {
       List<Produit> listeProduits = [];
       for (var item in data) {
         var produit = Produit(
-
           nom: item['NOM_PROD'],
           description: item['DESCRIP'],
           prix: double.parse(item['PRIX']),
