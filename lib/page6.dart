@@ -1,11 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/page4.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProduitDetailPage extends StatelessWidget {
   final Produit produit;
 
   ProduitDetailPage({required this.produit});
+
+  Future<void> commanderProduit(BuildContext context, Produit produit) async {
+    // Récupérer l'ID de l'utilisateur depuis SharedPreferences (à adapter selon votre implémentation)
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? idUser = prefs.getInt('id_user');
+
+    if (idUser == null) {
+      // Si l'ID de l'utilisateur n'est pas disponible, afficher un message d'erreur
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: ID de l\'utilisateur non trouvé')),
+      );
+      return;
+    }
+
+    // Les détails de la commande (ID du produit et quantité)
+    List<Map<String, dynamic>> detailsCommande = [
+      {
+        'id_produit': produit.id, // Remplacez par l'ID du produit (ou tout autre identifiant unique du produit)
+        'quantite': 1, // Vous pouvez adapter ici la quantité commandée
+      },
+    ];
+
+    // Les données à envoyer au serveur
+    Map<String, dynamic> data = {
+      'click': 'com',
+      'id_user': idUser,
+      'details_commande': jsonEncode(detailsCommande),
+    };
+
+    // URL du serveur où se trouve le code PHP
+    final String url = 'http://karlmichel.alwaysdata.net/uploading.php';
+
+    // Envoyer la requête HTTP POST
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: data,
+      );
+
+      // Vérifier la réponse du serveur
+      if (response.statusCode == 200) {
+        // Afficher un message pour indiquer que la commande a été enregistrée avec succès
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Commande enregistrée avec succès')),
+        );
+      } else {
+        // Afficher un message d'erreur en cas de problème avec la commande
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de la commande')),
+        );
+      }
+    } catch (e) {
+      // En cas d'erreur lors de la requête HTTP
+      print('Erreur lors de la requête HTTP : $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur lors de la commande')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +135,7 @@ class ProduitDetailPage extends StatelessWidget {
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
+                commanderProduit(context, produit); // Appel de la fonction de commande
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.white, // Intérieur des boutons en bleu
@@ -117,3 +179,4 @@ class ProduitDetailPage extends StatelessWidget {
     prefs.setStringList('panier', panier);
   }
 }
+

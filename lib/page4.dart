@@ -249,6 +249,7 @@ class _MenuState extends State<Menu> {
       List<Produit> listeProduits = [];
       for (var item in data) {
         var produit = Produit(
+          id: 1,
           nom: item['NOM_PROD'],
           description: item['DESCRIP'],
           prix: double.parse(item['PRIX']),
@@ -346,13 +347,14 @@ class _MenuState extends State<Menu> {
 
 
 class Produit {
-
+  final int id;
   final String nom;
   final String description;
   final double prix;
   final String imagePath; // Chemin de l'image du produit
 
   Produit({
+    required this.id,
     required this.nom,
     required this.description,
     required this.prix,
