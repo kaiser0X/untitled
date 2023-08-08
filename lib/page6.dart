@@ -12,9 +12,9 @@ class ProduitDetailPage extends StatelessWidget {
   Future<void> commanderProduit(BuildContext context, Produit produit) async {
     // Récupérer l'ID de l'utilisateur depuis SharedPreferences (à adapter selon votre implémentation)
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? idUser = prefs.getInt('id_user');
+    String? id = prefs.getString('id');
 
-    if (idUser == null) {
+    if (id == null) {
       // Si l'ID de l'utilisateur n'est pas disponible, afficher un message d'erreur
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erreur: ID de l\'utilisateur non trouvé')),
@@ -33,7 +33,7 @@ class ProduitDetailPage extends StatelessWidget {
     // Les données à envoyer au serveur
     Map<String, dynamic> data = {
       'click': 'com',
-      'id_user': idUser,
+      'id_user': id,
       'details_commande': jsonEncode(detailsCommande),
     };
 

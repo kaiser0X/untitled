@@ -48,6 +48,7 @@ class _ConnState extends State<Conn> {
     print(response.body.split(',')[1]);
     print(response.body.split(',')[2]);
     print(response.body.split(',')[3]);
+    print(response.body.split(',')[4]);
     if (response.statusCode == 200) {
       if (response.body == '0') {
         // Les données de connexion sont incorrectes, afficher un message d'erreur
@@ -59,10 +60,11 @@ class _ConnState extends State<Conn> {
         // Naviguer vers la page 3
         killForm();
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nom', response.body.split(',')[0]);
-        await prefs.setString('prenom', response.body.split(',')[1]);
-        await prefs.setString('telephone', response.body.split(',')[2]);
-        await prefs.setString('email', response.body.split(',')[3]);
+        await prefs.setString('id', response.body.split(',')[0]);
+        await prefs.setString('nom', response.body.split(',')[1]);
+        await prefs.setString('prenom', response.body.split(',')[2]);
+        await prefs.setString('telephone', response.body.split(',')[3]);
+        await prefs.setString('email', response.body.split(',')[4]);
       }
     } else {
       // La requête a échoué

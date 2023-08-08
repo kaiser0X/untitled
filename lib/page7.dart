@@ -74,6 +74,8 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
+
+
   // Méthode de requête HTTP pour obtenir les résultats de recherche à partir du serveur
   Future<List<String>> getSearchResultsFromServer(String query) async {
     final url = 'http://karlmichel.alwaysdata.net/recherche.php'; // Remplacez par l'URL de votre fichier PHP
@@ -126,11 +128,57 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Ici, vous pouvez retourner un widget pour afficher les résultats de la recherche lorsque l'utilisateur soumet sa recherche.
-    // Par exemple, vous pouvez afficher une liste de produits ou de catégories correspondant à la recherche.
-    // Vous pouvez également choisir de rediriger l'utilisateur vers une autre page avec les résultats complets.
-    return Container();
+    // Vérifiez si la requête de recherche est vide
+    if (query.isEmpty) {
+      return Center(
+        child: Text('Entrez un terme de recherche'),
+      );
+    }
+
+    // Obtenez les résultats de recherche à partir du serveur PHP
+    return FutureBuilder<List<String>>(
+      future: getSearchResultsFromServer(query),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Erreur lors de la recherche'),
+          );
+        } else {
+          final suggestions = snapshot.data ?? [];
+
+          if (suggestions.isEmpty) {
+            return Center(
+              child: Text('Aucun résultat trouvé'),
+            );
+          }
+
+          // Construire une liste de ListTile pour afficher les résultats de recherche
+          return ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) {
+              final suggestion = suggestions[index];
+              return ListTile(
+                title: Text(suggestion),
+                onTap: () {
+                  // Lorsque l'utilisateur appuie sur une suggestion, effectuez l'action souhaitée ici (par exemple, naviguer vers une autre page avec les détails du produit ou de la catégorie).
+                  // Vous pouvez utiliser le résultat de la requête pour obtenir les détails du produit ou de la catégorie correspondant à la suggestion sélectionnée.
+                  // Remplacez cette action par votre propre action souhaitée.
+                  print('Suggestion sélectionnée: $suggestion');
+                  close(context, suggestion);
+                },
+              );
+            },
+          );
+        }
+      },
+    );
+
   }
+
 
 // Le reste des méthodes buildActions, buildLeading et buildResults peut rester inchangé pour le moment
 // Vous pouvez les implémenter si vous en avez besoin à l'avenir.

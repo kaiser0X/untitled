@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:untitled/page5.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -21,6 +23,7 @@ class Karl extends StatelessWidget {
     );
   }
 }
+
 
 class New extends StatefulWidget {
   @override
@@ -145,11 +148,13 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
+  String? id;
   String? nom;
   String? prenom;
   String? telephone;
   String? mail;
   String? pseudo;
+
 
   @override
   void initState() {
@@ -161,6 +166,7 @@ class _ProfilState extends State<Profil> {
     // Obtention des préférences partagées.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      id = prefs.getString('id');
       nom = prefs.getString('nom');
       prenom = prefs.getString('prenom');
       telephone = prefs.getString('telephone');
@@ -249,7 +255,7 @@ class _MenuState extends State<Menu> {
       List<Produit> listeProduits = [];
       for (var item in data) {
         var produit = Produit(
-          id: 1,
+          id: item['ID_PROD'],
           nom: item['NOM_PROD'],
           description: item['DESCRIP'],
           prix: double.parse(item['PRIX']),
@@ -347,7 +353,7 @@ class _MenuState extends State<Menu> {
 
 
 class Produit {
-  final int id;
+  final String id;
   final String nom;
   final String description;
   final double prix;
@@ -361,6 +367,7 @@ class Produit {
     required this.imagePath,
   });
 }
+
 
 
 
