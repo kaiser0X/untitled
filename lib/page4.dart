@@ -10,7 +10,7 @@ import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:untitled/page6.dart';
 import 'package:untitled/page7.dart';
 import 'package:untitled/page8.dart';
-import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
+import 'package:untitled/page4.dart/Menu.dart';
 
 
 class Karl extends StatelessWidget {
@@ -106,7 +106,7 @@ class _NewState extends State<New> {
                 Navigator.pop(context); // Fermer le menu après avoir cliqué
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PanierPage()),
+                  MaterialPageRoute(builder: (context) => PanierPage(produit: produit)),
                 );
               },
             ),

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PanierPage extends StatefulWidget {
-  final Produit produit; // Déclarer la variable produit
+  final Produit produit;
 
   PanierPage({required this.produit});
 
@@ -15,6 +15,8 @@ class PanierPage extends StatefulWidget {
 
 class _PanierPageState extends State<PanierPage> {
   List<String> panierItems = [];
+  List<Produit> listeProduits = [];
+
 
   Future<void> commanderPanier(BuildContext context) async {
     // Récupérer l'ID de l'utilisateur depuis SharedPreferences (à adapter selon votre implémentation)
@@ -31,11 +33,15 @@ class _PanierPageState extends State<PanierPage> {
 
     // Les détails de la commande (ID du produit et quantité) pour chaque produit dans le panier
     List<Map<String, dynamic>> detailsCommande = [];
-    for (var produit in panierItems) {
-      detailsCommande.add({
-        'id_produit': produit.id, // Remplacez par l'ID du produit (ou tout autre identifiant unique du produit)
-        'quantite': 1, // Vous pouvez adapter ici la quantité commandée
-      });
+
+    for (var produitId in panierItems) {
+      Produit produitDetails = listeProduits.firstWhere((produit) => produit.id == produitId);
+      if (produitDetails != null) {
+        detailsCommande.add({
+          'id_produit': produitDetails.id,
+          'quantite': 1, // Vous pouvez adapter ici la quantité commandée
+        });
+      }
     }
 
     // Les données à envoyer au serveur
@@ -79,6 +85,7 @@ class _PanierPageState extends State<PanierPage> {
       );
     }
   }
+
 
   @override
   void initState() {
@@ -151,7 +158,12 @@ class _PanierPageState extends State<PanierPage> {
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     // Ajoutez ici la logique pour supprimer l'élément du panier
-                    panierItems.removeAt(index);
+                    if (index >= 0 && index < panierItems.length) {
+                      // L'index est valide, supprimez l'élément du panier
+                      setState(() {
+                        panierItems.removeAt(index);
+                      });
+                    }
                   },
                 ),
               ),
@@ -163,7 +175,13 @@ class _PanierPageState extends State<PanierPage> {
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
           onPressed: () {
-            // Ajoutez ici la logique pour le bouton en bas de la page
+            if (panierItems.isNotEmpty) {
+              commanderPanier(context);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Le panier est vide')),
+              );
+            }// Ajoutez ici la logique pour le bouton en bas de la page
           },
           child: Text('Commander'),
         ),

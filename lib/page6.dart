@@ -173,7 +173,7 @@ class ProduitDetailPage extends StatelessWidget {
     }
 
     // Ajouter les informations du produit au panier (vous pouvez ajuster les informations que vous souhaitez enregistrer)
-    panier.add('Titre: ${produit.nom}, Prix: ${produit.prix.toStringAsFixed(2)}, Description: ${produit.description}');
+    panier.add(produit.id.toString());
 
     // Enregistrer la liste mise à jour dans SharedPreferences
     prefs.setStringList('panier', panier);
