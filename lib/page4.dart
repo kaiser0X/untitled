@@ -1,246 +1,59 @@
-import 'dart:ffi';
-
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/page5.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
+
 import 'package:untitled/page6.dart';
-import 'package:untitled/page7.dart';
-import 'package:untitled/page8.dart';
-import 'package:untitled/page4.dart/Menu.dart';
 
 
-class Karl extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Kaiser Test 2",
-      debugShowCheckedModeBanner: false,
-   
-    );
-  }
+class Product {
+  final int id;
+  final String name;
+  final String image;
+  final int price;
+
+  Product(this.id, this.name, this.image, this.price);
 }
 
+class CartItem {
+  final Product product;
+  int quantity;
 
-class New extends StatefulWidget {
-  @override
-  _NewState createState() => _NewState();
+  CartItem(this.product, this.quantity);
 }
 
-class _NewState extends State<New> {
-  int currentIndex = 0;
+class Cart {
+  List<CartItem> items = [];
 
-  Widget getPage(int index) {
-    switch (index) {
-      case 0:
-        return Menu();
-      case 1:
-        return Recherche();
-      case 2:
-        return Container();
-      case 3:
-        return Profil();
-      default:
-        return Container();
+  double get totalPrice =>
+      items.fold(0, (total, item) => total + item.product.price * item.quantity);
+
+  void addToCart(Product product) {
+    CartItem? cartItem;
+
+    for (var item in items) {
+      if (item.product.id == product.id) {
+        cartItem = item;
+        break;
+      }
+    }
+
+    if (cartItem != null) {
+      cartItem.quantity++;
+    } else {
+      items.add(CartItem(product, 1));
     }
   }
 
-  void Ajout() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Visual()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent[300],
-        elevation: 4,
-        centerTitle: true,
-        title: Text(
-          'F D T C',
-          textAlign: TextAlign.center,
-        ),
-        leading: Builder( // Utiliser un Builder ici
-          builder: (context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer(); // Utiliser le context du Builder
-            },
-            icon: Icon(Icons.menu),
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Ajout();
-            },
-            icon: Icon(Icons.person),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        // Le contenu du menu
-        child: ListView(
-          children: [
-            // L'en-tête du menu
-            DrawerHeader(
-              child: Container(
-                width: 200,
-                height: 150,
-                child: Text('Menu'),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            // Les éléments du menu
-            ListTile(
-              leading: Icon(Icons.shopping_basket_outlined),
-              title: Text('Panier'),
-              onTap: () {
-                Navigator.pop(context); // Fermer le menu après avoir cliqué
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PanierPage(produit: produit)),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.notification_add_outlined),
-              title: Text('Notification'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: getPage(currentIndex),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.blueAccent,
-        backgroundColor: Colors.transparent,
-        index: currentIndex,
-        items: [
-          Icon(Icons.home, color: Colors.white),
-          Icon(Icons.search, color: Colors.white),
-          Icon(Icons.settings, color: Colors.white),
-          Icon(Icons.add_shopping_cart, color: Colors.white),
-        ],
-        onTap: (int index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-      ),
-    );
+  void removeFromCart(CartItem cartItem) {
+    items.remove(cartItem);
   }
 }
 
+class Shopping extends StatelessWidget {
+  final Cart cart = Cart();
 
-class Profil extends StatefulWidget {
-  @override
-  _ProfilState createState() => _ProfilState();
-}
-
-class _ProfilState extends State<Profil> {
-  String? id;
-  String? nom;
-  String? prenom;
-  String? telephone;
-  String? mail;
-  String? pseudo;
-
-
-  @override
-  void initState() {
-    super.initState();
-    profil();
-  }
-
-  void profil() async {
-    // Obtention des préférences partagées.
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      id = prefs.getString('id');
-      nom = prefs.getString('nom');
-      prenom = prefs.getString('prenom');
-      telephone = prefs.getString('telephone');
-      mail = prefs.getString('email');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(50.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue, width: 2.0),
-                    color: Colors.white, // Couleur d'arrière-plan
-                  ),
-                  height: MediaQuery.of(context).size.height / 3,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Nom : $nom',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Text(
-                          'Prénom : $prenom',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Text(
-                          'Telphone : $telephone',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Text(
-                          'Mail : $mail',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Menu extends StatefulWidget {
-  @override
-  _MenuState createState() => _MenuState();
-}
-
-class _MenuState extends State<Menu> {
-  List<Produit> produits = []; // Liste des produits à afficher dans la GridView
-
-
-  @override
-  void initState() {
-    super.initState();
-    chargerProduits(); // Charger les données des produits depuis la base de données
-  }
-
-  void chargerProduits() async {
+  Future<List<Product>> fetchProducts() async {
     var url = 'http://karlmichel.alwaysdata.net/affiche.php';
 
     var response = await http.post(Uri.parse(url), body: {
@@ -248,139 +61,360 @@ class _MenuState extends State<Menu> {
     });
 
     if (response.statusCode == 200) {
-      // La requête a réussi, vous pouvez accéder aux données renvoyées par l'API
-      var data = json.decode(response.body);
-
-      // Parcourir les données et créer des objets Produit
-      List<Produit> listeProduits = [];
-      for (var item in data) {
-        var produit = Produit(
-          id: item['ID_PROD'],
-          nom: item['NOM_PROD'],
-          description: item['DESCRIP'],
-          prix: double.parse(item['PRIX']),
-          imagePath: item['PHOTO_PROD'],
-        );
-        listeProduits.add(produit);
-      }
-
-      setState(() {
-        produits = listeProduits;
-      });
+      print(json.decode(response.body)[0]['ID_PROD']);
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => Product(item['ID_PROD'], item['NOM_PROD'], item['PHOTO_PROD'], item['PRIX'])).toList();
     } else {
-      // La requête a échoué
-      print('Échec de la requête avec le code ${response.statusCode}');
+      throw Exception('Failed to load products');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Product List',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(cart: cart, fetchProducts: fetchProducts),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  final Cart cart;
+  final Future<List<Product>> Function() fetchProducts;
+
+  MyHomePage({required this.cart, required this.fetchProducts});
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+int _calculateTotalItems(Cart cart) {
+  int totalItems = 0;
+  for (var cartItem in cart.items) {
+    totalItems += cartItem.quantity;
+  }
+  return totalItems;
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Product List'),
+      ),
+      body: Column(
+        children: [
+          CarouselSlider(
+              items: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+
+                      image: DecorationImage(
+                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/titan s1.jpg'),
+                          fit: BoxFit.cover
+                      )
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+
+                      image: DecorationImage(
+                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/dragon  ball super.jpg'),
+                          fit: BoxFit.cover
+                      )
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+
+                      image: DecorationImage(
+                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/gardien1.jpg'),
+                          fit: BoxFit.cover
+                      )
+                  ),
+                ),
+              ],
+              options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height/3,
+                  viewportFraction: 0.8,
+                  aspectRatio: 16/9,
+                  initialPage: 0,
+
+                  scrollDirection: Axis.horizontal,
+                  autoPlay: true,
+                  enableInfiniteScroll: true,
+                  autoPlayInterval: Duration(
+                      seconds: 5
+                  ),
+                  autoPlayAnimationDuration: Duration(
+                      milliseconds: 800
+                  ),
+              )),
+           SizedBox(height: 20,),
+           Row(
+             children: [
+               TextButton(onPressed: () {}, child: Text('Toutes les commandes ->')),
+             ],
+           ),
+           Expanded(child: FutureBuilder<List<Product>>(
+             future: widget.fetchProducts(),
+             builder: (context, snapshot) {
+               if (snapshot.connectionState == ConnectionState.waiting) {
+                 return Center(child: CircularProgressIndicator());
+               } else if (snapshot.hasError) {
+                 return Text('Error: ${snapshot.error}');
+               } else {
+                 return ListView.builder(
+
+                   itemCount: snapshot.data!.length,
+                   itemBuilder: (context, index) {
+                     var product = snapshot.data![index];
+                     return Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: GestureDetector(
+                         onTap: (){
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(
+                               builder: (context) => ProductDetailPage(product: product, cart: widget.cart),
+                             ),
+                           );
+                         },
+                         child: Container(
+                           height: 200,
+                           width: MediaQuery.of(context).size.width/1.2,
+                           decoration:
+                           BoxDecoration(
+                             color: Colors.white,
+                             borderRadius: BorderRadius.circular(10)
+                           ),
+                           child: Row(
+                             children: [
+                               Padding(
+                                 padding: const EdgeInsets.only(left: 20),
+                                 child: GestureDetector(
+                                   onTap: (){
+                                     Navigator.push(
+                                       context,
+                                       MaterialPageRoute(
+                                         builder: (context) => ProductDetailPage(product: product, cart: widget.cart),
+                                       ),
+                                     );
+                                   },
+                                   child: Container(
+                                     height: 180,
+                                     width: MediaQuery.of(context).size.width/2.2,
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(10),
+                                       image: DecorationImage(
+                                         image: NetworkImage(
+                                           product.image
+                                         ),
+                                         fit: BoxFit.cover
+                                       )
+                                     ),
+                                   ),
+                                 ),
+                               )
+                             ],
+                           ),
+                         ),
+                       ),
+                     );
+                   },
+                 );
+               }
+             },
+           ),)
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartPage(cart: widget.cart)),
+          );
+        },
+        label: Text('Cart (${_calculateTotalItems(widget.cart)})'), // Utilise la fonction _calculateTotalItems
+        icon: Icon(Icons.shopping_cart),
+      ),
+    );
+  }
+}
+
+
+class CartPage extends StatefulWidget {
+  final Cart cart;
+
+  CartPage({required this.cart});
+
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+
+  Future<void> placeOrder() async {
+    // Liste des ID des produits dans le panier
+    List<String> idProduitsStr = widget.cart.items.map((item) => item.product.id.toString()).toList();
+    // Liste des quantités correspondantes
+    List<String> quantitesStr = widget.cart.items.map((item) => item.quantity.toString()).toList();
+
+
+    // Prix total du panier
+    double prixTotal = widget.cart.totalPrice;
+
+    // Récupérer l'ID de l'utilisateur connecté (vous devez l'obtenir de votre système d'authentification)
+    int idUtilisateur = 7; // ID de l'utilisateur connecté
+
+    // Créer les données à envoyer à l'API
+    Map<String, dynamic> data = {
+      'id_utilisateur': idUtilisateur.toString(),
+      'id_produit': idProduitsStr,
+      'quantite': quantitesStr,
+      'prix_total': prixTotal.toString(),
+    };
+
+    // Envoyer la requête POST à l'API pour enregistrer la commande
+    var response = await http.post(
+      Uri.parse('http://karlmichel.alwaysdata.net/Commander.php'), // Remplacez par l'URL de votre API PHP
+      body: data,
+    );
+    print(response.body);
+    // Vérifier la réponse de l'API et afficher un message approprié
+    if (response.statusCode == 200) {
+      // La commande a été enregistrée avec succès
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.body),
+        ),
+      );
+    } else {
+      // Il y a eu une erreur lors de l'enregistrement de la commande
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur lors de l\'enregistrement de la commande.'),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.0,
-        ),
-        itemBuilder: (context, index) {
-          var produit = produits[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProduitDetailPage(produit: produit),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.blue,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start, // Alignez le contenu en haut de la colonne
-                  children: [
-                    Expanded(
-                      child: ClipRRect( // Ajoutez ClipRRect pour ajouter des bords arrondis à l'image
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          produit.imagePath, // Utilisez le chemin de l'image du produit
-                          width: 120,
-                          height: 80,
-                          fit: BoxFit.cover, // Ajustez l'image pour qu'elle remplisse l'espace
-                        ),
+      appBar: AppBar(
+        title: Text('Cart'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.cart.items.length,
+              itemBuilder: (context, index) {
+                var cartItem = widget.cart.items[index];
+                return ListTile(
+                  title: Text(cartItem.product.name),
+                  subtitle: Text('Quantity: ${cartItem.quantity}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () {
+                          setState(() {
+                            if (cartItem.quantity > 1) {
+                              cartItem.quantity--;
+                            } else {
+                              widget.cart.removeFromCart(cartItem);
+                            }
+                          });
+                        },
                       ),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      produit.nom,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
+                      Text('${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          setState(() {
+                            cartItem.quantity++;
+                          });
+                        },
                       ),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      produit.description,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      '\$${produit.prix.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-        itemCount: produits.length,
-      )
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Total: \$${widget.cart.totalPrice.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Récupérer les ID des produits et les quantités depuis le panier
+                    List<int> idProduits = widget.cart.items.map((item) => item.product.id).toList();
+                    List<int> quantites = widget.cart.items.map((item) => item.quantity).toList();
 
+                    // Convertir les listes en chaînes de caractères séparées par des virgules
+                    String idProduitsString = idProduits.join(",");
+                    String quantitesString = quantites.join(",");
 
+                    // Prix total depuis le cart
+                    double prixTotal = widget.cart.totalPrice;
+
+                    // ID utilisateur (remplacez par votre logique d'authentification)
+                    int idUtilisateur = 123; // Exemple d'ID utilisateur
+
+                    // Construire le corps de la requête POST
+                    var requestBody = {
+                      'id_utilisateur': idUtilisateur.toString(),
+                      'id_produits': idProduitsString,
+                      'quantites': quantitesString,
+                      'prix_total': prixTotal.toString(),
+                    };
+
+                    // Envoyer la requête POST à l'API
+                    var response = await http.post(Uri.parse('http://karlmichel.alwaysdata.net/Commander.php'), body: requestBody);
+                    print(response.body);
+                    if (response.statusCode == 200) {
+                      // La commande a été enregistrée avec succès
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Commande enregistrée avec succès.'),
+                        ),
+                      );
+                      // Effacer le panier après la commande
+                      setState(() {
+                        widget.cart.items.clear();
+                      });
+                    } else {
+                      // Erreur lors de l'enregistrement de la commande
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Erreur lors de l\'enregistrement de la commande.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text('Passer la commande'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
-
-class Produit {
-  final String id;
-  final String nom;
-  final String description;
-  final double prix;
-  final String imagePath; // Chemin de l'image du produit
-
-  Produit({
-    required this.id,
-    required this.nom,
-    required this.description,
-    required this.prix,
-    required this.imagePath,
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

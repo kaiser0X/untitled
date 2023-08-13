@@ -120,7 +120,7 @@ class _VisualState extends State<Visual> {
       appBar: AppBar(
         title: Text('Enregistrer un produit'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

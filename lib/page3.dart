@@ -75,7 +75,7 @@ class _ConnState extends State<Conn> {
   void killForm() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => New()), // Remplacez "Page2" par le nom de votre page cible
+      MaterialPageRoute(builder: (context) => Shopping ()), // Remplacez "Page2" par le nom de votre page cible
     );
   }
 
