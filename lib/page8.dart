@@ -13,7 +13,7 @@ class PanierPage extends StatefulWidget {
 
 class _PanierPageState extends State<PanierPage> {
   List<String> panierItems = [];
-  List<Produit> listeProduits = [];
+
 
 
   Future<void> commanderPanier(BuildContext context) async {
