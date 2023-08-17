@@ -9,6 +9,7 @@ class ProductDetailPage extends StatefulWidget {
   ProductDetailPage({required this.product, required this.cart, required this.fetchProducts});
 
 
+
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
 }
@@ -66,23 +67,37 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(widget.product.image),
-                        SizedBox(height: 10),
-                        Text(
-                          '\$${widget.product.price.toStringAsFixed(2)}',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10), // Vous pouvez ajuster le rayon selon vos préférences
+                          child: Image.network(widget.product.image),
                         ),
                         SizedBox(height: 20),
-                        Text(
-                          widget.product.description,
-                          style: TextStyle(fontSize: 16),
+                        Container(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width/1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black12,
+                          ),
+                          child: Text(
+                            '${widget.product.description}',
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
                         ),
-                        SizedBox(height: 240),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
+                        SizedBox(height: 260),
+                        Row( // Utilisation de Row pour aligner horizontalement le prix et le bouton
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ajustez l'alignement selon vos préférences
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '\$${widget.product.price.toStringAsFixed(2)}',
+                                style: TextStyle(fontSize: 20, color: Colors.black),
+                              ),
+                            ),
+                            ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   widget.cart.addToCart(widget.product);
@@ -93,9 +108,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ),
                                 );
                               },
-                              child: Text('Ajouter au panier'),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                minimumSize: Size(90, 60),
+                              ),
+                              child: Text('Ajouter au panier',
+                                style: TextStyle(fontSize: 18
+                                )),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),

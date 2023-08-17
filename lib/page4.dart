@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled/page5.dart';
 import 'dart:convert';
 import 'package:untitled/page6.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class Product {
@@ -13,6 +15,13 @@ class Product {
   final String description;
 
   Product(this.id, this.name, this.image, this.price, this.description);
+}
+
+class Categori {
+  final int Id;
+  final String nom;
+
+  Categori(this.Id, this.nom);
 }
 
 class CartItem {
@@ -67,7 +76,10 @@ class Shopping extends StatelessWidget {
     } else {
       throw Exception('Failed to load products');
     }
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +96,8 @@ class Shopping extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final Cart cart;
   final Future<List<Product>> Function() fetchProducts;
+
+
 
   MyHomePage({required this.cart, required this.fetchProducts});
 
@@ -104,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 50,),
+          SizedBox(height: 20,),
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Row(
@@ -112,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 IconButton(
                   onPressed: (){
+
                   },
                   icon: Icon(Icons.menu, color: Colors.blueAccent,),
                 ),
@@ -121,7 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),),
                 IconButton(
                   onPressed: (){
-
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Visual(),
+                      ),
+                    );
                   },
                   icon: Icon(Icons.person, color: Colors.blueAccent,),
                 ),
@@ -131,38 +151,32 @@ class _MyHomePageState extends State<MyHomePage> {
           CarouselSlider(
               items: [
                 Container(
-                  width: MediaQuery.of(context).size.width / 1,
+                  height: MediaQuery.of(context).size.height/5,
+                  width: MediaQuery.of(context).size.width/1.3,
                   decoration: BoxDecoration(
                       color: Colors.blue,
-                      image: DecorationImage(
-                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/titan s1.jpg'),
-                          fit: BoxFit.cover
-                      )
+                      borderRadius: BorderRadius.circular(10)
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width / 1,
+                  height: MediaQuery.of(context).size.height/5,
+                  width: MediaQuery.of(context).size.width/1.3,
                   decoration: BoxDecoration(
                       color: Colors.red,
-                      image: DecorationImage(
-                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/dragon  ball super.jpg'),
-                          fit: BoxFit.cover
-                      )
+                      borderRadius: BorderRadius.circular(10)
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width / 1,
+                  height: MediaQuery.of(context).size.height/5,
+                  width: MediaQuery.of(context).size.width/1.3,
                   decoration: BoxDecoration(
                       color: Colors.red,
-                      image: DecorationImage(
-                          image: NetworkImage('https://emploie.alwaysdata.net/daywatch/image/gardien1.jpg'),
-                          fit: BoxFit.cover
-                      )
+                      borderRadius: BorderRadius.circular(10)
                   ),
                 ),
               ],
               options: CarouselOptions(
-                height: MediaQuery.of(context).size.height/3,
+                height: MediaQuery.of(context).size.height/5,
                 scrollDirection: Axis.horizontal,
                 autoPlay: true,
                 enableInfiniteScroll: true,
@@ -196,40 +210,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProductDetailPage(
-                                product: product,
-                                cart: widget.cart,
-                                fetchProducts: widget.fetchProducts,
-                              ),
+                              builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                             ),
                           );
                         },
                         child: Container(
-                          height:MediaQuery.of(context).size.height * 0.5,
+                          height: 80,
                           width: MediaQuery.of(context).size.width/2.6,
                           decoration:
                           BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10)
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)
                           ),
                           child: Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 12),
+                                padding: const EdgeInsets.only(left: 20),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: (){
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProductDetailPage(
-                                          product: product,
-                                          cart: widget.cart,
-                                          fetchProducts: widget.fetchProducts,
-                                        ),
+                                        builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                                       ),
                                     );
                                   },
@@ -237,20 +243,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                        height: 77,
-                                        width: MediaQuery.of(context).size.width/3,
+                                        height: 120,
+                                        width: MediaQuery.of(context).size.width/4,
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    product.image
-                                                ),
-                                                fit: BoxFit.cover
-                                            )
                                         ),
                                       ),
                                       SizedBox(height: 10,),
-
+                                      Text(product.name,style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold
+                                      ),)
                                     ],
                                   ),
                                 ),
@@ -286,15 +290,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProductDetailPage(
-                                product: product,
-                                cart: widget.cart,
-                                fetchProducts: widget.fetchProducts,
-                              ),
+                              builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                             ),
                           );
                         },
@@ -311,15 +311,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: (){
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProductDetailPage(
-                                          product: product,
-                                          cart: widget.cart,
-                                          fetchProducts: widget.fetchProducts,
-                                        ),
+                                        builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                                       ),
                                     );
                                   },
@@ -379,15 +375,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProductDetailPage(
-                                product: product,
-                                cart: widget.cart,
-                                fetchProducts: widget.fetchProducts,
-                              ),
+                              builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                             ),
                           );
                         },
@@ -404,15 +396,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: (){
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProductDetailPage(
-                                          product: product,
-                                          cart: widget.cart,
-                                          fetchProducts: widget.fetchProducts,
-                                        ),
+                                        builder: (context) => ProductDetailPage(product: product, cart: widget.cart, fetchProducts: widget.fetchProducts),
                                       ),
                                     );
                                   },
@@ -456,6 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
 
 
 class CartPage extends StatefulWidget {
@@ -527,35 +516,47 @@ class _CartPageState extends State<CartPage> {
               itemCount: widget.cart.items.length,
               itemBuilder: (context, index) {
                 var cartItem = widget.cart.items[index];
-                return ListTile(
-                  title: Text(cartItem.product.name),
-                  subtitle: Text('Quantity: ${cartItem.quantity}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () {
-                          setState(() {
-                            if (cartItem.quantity > 1) {
-                              cartItem.quantity--;
-                            } else {
-                              widget.cart.removeFromCart(cartItem);
-                            }
-                          });
-                        },
+                return Column(
+                  children: [
+                    SizedBox(height: 10,),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.black26,
                       ),
-                      Text('${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            cartItem.quantity++;
-                          });
-                        },
+                      child: ListTile(
+                        leading: Image.network(cartItem.product.image),
+                        title: Text(cartItem.product.name),
+                        subtitle: Text('Quantity: ${cartItem.quantity}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.remove),
+                              onPressed: () {
+                                setState(() {
+                                  if (cartItem.quantity > 1) {
+                                    cartItem.quantity--;
+                                  } else {
+                                    widget.cart.removeFromCart(cartItem);
+                                  }
+                                });
+                              },
+                            ),
+                            Text('${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {
+                                setState(() {
+                                  cartItem.quantity++;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -569,8 +570,20 @@ class _CartPageState extends State<CartPage> {
                   'Total: \$${widget.cart.totalPrice.toStringAsFixed(2)}',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: BottomAppBar(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: ElevatedButton(
                   onPressed: () async {
                     // Récupérer les ID des produits et les quantités depuis le panier
                     List<int> idProduits = widget.cart.items.map((item) => item.product.id).toList();
@@ -617,12 +630,13 @@ class _CartPageState extends State<CartPage> {
                       );
                     }
                   },
+
                   child: Text('Passer la commande'),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
