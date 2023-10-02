@@ -12,6 +12,7 @@ import 'package:untitled/panier.dart';
 import 'package:untitled/Commande.dart';
 import 'package:untitled/Profil_User.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:untitled/Messenger.dart';
 
 
 class Product {
@@ -112,6 +113,8 @@ class _BoutiqueState extends State<Boutique> {
     }
   }
 
+  int _selectedIndex = 0;
+
 
 
   @override
@@ -144,12 +147,46 @@ class _BoutiqueState extends State<Boutique> {
             icon: Icons.comment,
             text: 'Commande',),
           GButton(
-              icon: Icons.heart_broken,
-              text: 'Like',),
+              icon: Icons.shopping_cart,
+              text: 'Pannier',
+                ),
           GButton(
-            icon: Icons.home,
+            icon: Icons.person,
             text: 'Profil',),
         ],
+        selectedIndex: _selectedIndex,
+        onTabChange: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Boutique()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => User_commande()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=>CartPage(cart: cart,)),
+              );
+              break;
+            case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AutrePage()),
+              );
+              break;
+            default:
+              setState(() {
+                _selectedIndex = index;
+              });
+          }
+        },
       ),
       drawer: Drawer(
         child: ListView(
@@ -158,6 +195,7 @@ class _BoutiqueState extends State<Boutique> {
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
+                borderRadius: BorderRadius.circular(18.0),
               ),
               child: Text(
                 'Menu',
@@ -168,19 +206,19 @@ class _BoutiqueState extends State<Boutique> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Paramètres'),
+              leading: Icon(Icons.messenger),
+              title: Text('Message'),
               onTap: () {
                 Navigator.pop(context); // Ferme le menu
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => User_commande()),
+                  MaterialPageRoute(builder: (context) => Messagerie()),
                 ); // Navigue vers la page des commandes
               },
             ),
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profil'),
+              leading: Icon(Icons.heart_broken),
+              title: Text('Like'),
               onTap: () {
                 Navigator.pop(context); // Ferme le menu
                 Navigator.push(
