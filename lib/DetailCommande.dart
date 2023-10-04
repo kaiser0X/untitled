@@ -137,14 +137,8 @@ class _Details_CommandeState extends State<Details_Commande> {
                   //     ),
                   //   );
                   // }
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 2.7,
-                  height: 60,
-                  child: Center(child: Text('Repasser la commande', style: TextStyle(
-                      color: Colors.white
-                  ),)),
-                ),
+                }, child: null,
+
               ),
             ],
           ),

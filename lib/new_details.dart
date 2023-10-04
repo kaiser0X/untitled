@@ -135,7 +135,7 @@ class _productDetailPageState extends State<productDetailPage> {
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // Définit la couleur de fond à noir
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Supprime les bordures
+                      borderRadius: BorderRadius.circular(70), // Supprime les bordures
                     ),
                   ),
                 ),
@@ -163,7 +163,7 @@ class _productDetailPageState extends State<productDetailPage> {
               ),
               SizedBox(width: 5,),
               Text('$quantite',style: TextStyle(
-                fontSize: 25,
+                fontSize: 15,
                 fontWeight: FontWeight.bold
               ),),
               SizedBox(width: 5,),
@@ -172,7 +172,7 @@ class _productDetailPageState extends State<productDetailPage> {
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // Définit la couleur de fond à noir
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Supprime les bordures
+                      borderRadius: BorderRadius.circular(70), // Supprime les bordures
                     ),
                   ),
                 ),
@@ -182,10 +182,10 @@ class _productDetailPageState extends State<productDetailPage> {
                   });
                 },
                 child: Container(
-                  width: 15,
-                  height: 30,
+                  width: 10,
+                  height: 20,
                   child: Center(child: Text('+', style: TextStyle(
-                    fontSize: 25,
+                    fontSize: 15,
                       color: Colors.white
                   ),)),
                 ),
@@ -201,25 +201,34 @@ class _productDetailPageState extends State<productDetailPage> {
                   ),
                 ),
                 onPressed: () {
-                  setState(() {
-                    widget.cart.addToCart(widget.product, selectedValue!, selectedColor!,quantite );
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${widget.product.name} ajouté au panier'),
-                    ),
-                  );
+                  if (selectedValue == null || selectedColor == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Veuillez sélectionner la taille et la couleur'),
+                      ),
+                    );
+                  } else {
+                    setState(() {
+                      widget.cart.addToCart(widget.product, selectedValue!, selectedColor!, quantite);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${widget.product.name} ajouté au panier'),
+                      ),
+                    );
+                  }
                 },
                 child: Container(
-                  width: MediaQuery.of(context).size.width / 2.9,
-                  height: 60,
+                  width: MediaQuery.of(context).size.width / 3,
+                  height: 50,
                   child: Center(child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.add_shopping_cart_outlined,color: Colors.white,),
                       SizedBox(width: 5,),
                       Text('Ajouter au panier', style: TextStyle(
-                        color: Colors.white
+                        color: Colors.white,
+                        fontSize: 12,
                       ),),
                     ],
                   )),

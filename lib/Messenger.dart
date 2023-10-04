@@ -46,6 +46,7 @@ class _MessagerieState extends State<Messagerie> {
       Pseudo = prefs.getString('userPseudo');
       Email = prefs.getString('userEmail');
       Telephone = prefs.getString('userTelephone');
+      print(userId);
     });
   }
 
@@ -69,7 +70,6 @@ class _MessagerieState extends State<Messagerie> {
 
   void Send_message() async{
     var url = 'http://karlmichel.alwaysdata.net/api.php';
-
     var response = await http.post(Uri.parse(url), body: {
       'click': 'send_message',
       'send_id': userId.toString(),
@@ -175,7 +175,7 @@ class _MessagerieState extends State<Messagerie> {
               ),
             ),
             SizedBox(width: 10,),
-            Text(widget.nom_amie),
+            Text('Gérant'),
           ],
         ),
       ),
