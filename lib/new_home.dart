@@ -210,10 +210,10 @@ class _BoutiqueState extends State<Boutique> {
               title: Text('Message'),
               onTap: () {
                 Navigator.pop(context); // Ferme le menu
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Messagerie()),
-                ); // Navigue vers la page des commandes
+                //Navigator.push(
+                  //context,
+                 // MaterialPageRoute(builder: (context) => Messagerie()),
+               // ); // Navigue vers la page des commandes
               },
             ),
             ListTile(

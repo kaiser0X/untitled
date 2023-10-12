@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Details_Commandes_Users {
   final String prod_id;
@@ -140,6 +141,19 @@ class _Details_CommandeState extends State<Details_Commande> {
                 }, child: null,
 
               ),
+              SizedBox(width: 10,),
+              ElevatedButton(onPressed: () async {
+                final phone = '+24162704058'; // Remplacez par le numéro de téléphone auquel vous souhaitez envoyer un message WhatsApp
+                final url = 'https://wa.me/$phone';
+
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  // Gérer le cas où l'ouverture de WhatsApp échoue
+                  print('Impossible d\'ouvrir WhatsApp');
+                  }
+                  },
+                child: Text('Ouvrir WhatsApp'),)
             ],
           ),
         ),

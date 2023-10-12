@@ -19,15 +19,15 @@ class Message {
 }
 
 class Messagerie extends StatefulWidget {
-  var receive_id, nom_amie;
-  Messagerie({this.receive_id, this.nom_amie});
+  var receive_id, nom_amie, userId;
+  Messagerie({this.receive_id, this.nom_amie, this.userId});
 
   @override
   State<Messagerie> createState() => _MessagerieState();
 }
 
 class _MessagerieState extends State<Messagerie> {
-  var user_id = 5;
+
   Map<String, String?> imageUrls = {};
   TextEditingController message = TextEditingController();
   String selectedFileName = '';
@@ -150,11 +150,10 @@ class _MessagerieState extends State<Messagerie> {
     }
   }
 
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    userId = widget.userId; // Utilisez la valeur passée en paramètre
     session();
   }
   @override
@@ -259,124 +258,128 @@ class _MessagerieState extends State<Messagerie> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Expanded(
-          child: FutureBuilder<List<Message>>(
-            future: fetchProducts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  reverse: false,
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    var message = snapshot.data![index];
-                    String? imageUrl = imageUrls[message.doc_id];
-                    if (imageUrl == null) {
-                      // Si l'URL n'est pas encore disponible, appelez read_document pour la récupérer
-                      read_document(message.doc_id);
-                    }
-                    if(message.send_id == user_id){
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: message.doc_id != "0" ?200:100,
-                              width: MediaQuery.of(context).size.width/1.2,
-                              decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
-                                  borderRadius: BorderRadius.circular(8)
+        child: Row(
+          children: [
+            Expanded(
+              child: FutureBuilder<List<Message>>(
+                future: fetchProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      reverse: false,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        var message = snapshot.data![index];
+                        String? imageUrl = imageUrls[message.doc_id];
+                        if (imageUrl == null) {
+                          // Si l'URL n'est pas encore disponible, appelez read_document pour la récupérer
+                          read_document(message.doc_id);
+                        }
+                        if(message.send_id == userId){
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: message.doc_id != "0" ?200:100,
+                                  width: MediaQuery.of(context).size.width/1.2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blueAccent,
+                                      borderRadius: BorderRadius.circular(8)
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      message.doc_id != "0"
+                                          ?GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Voir_plus(message: message.message, date: message.send_date, document: imageUrl,)));
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width/1.25,
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(imageUrl!),
+                                                  fit: BoxFit.cover
+                                              )),
+                                        ),
+                                      )
+                                          :Container(),
+                                      Text(message.message,style: TextStyle(
+                                          color: Colors.white
+                                      ),),
+                                      Text(message.send_date,style: TextStyle(
+                                          color: Colors.white
+                                      ),),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  message.doc_id != "0"
-                                      ?GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Voir_plus(message: message.message, date: message.send_date, document: imageUrl,)));
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width/1.25,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          image: DecorationImage(
-                                              image: NetworkImage(imageUrl!),
-                                              fit: BoxFit.cover
-                                          )),
-                                    ),
-                                  )
-                                      :Container(),
-                                  Text(message.message,style: TextStyle(
-                                      color: Colors.white
-                                  ),),
-                                  Text(message.send_date,style: TextStyle(
-                                      color: Colors.white
-                                  ),),
-                                ],
+                            ],
+                          );
+                        }else{
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height:message.doc_id != "0"
+                                      ?200:100,
+                                  width: MediaQuery.of(context).size.width/1.2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      message.doc_id != "0"
+                                          ?GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Voir_plus(message: message.message, date: message.send_date, document: imageUrl,)));
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width/1.25,
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(imageUrl!),
+                                                  fit: BoxFit.cover
+                                              )),
+                                        ),
+                                      )
+                                          :Container(),
+                                      Text(message.message,style: TextStyle(
+                                          color: Colors.black54
+                                      ),),
+                                      Text(message.send_date,style: TextStyle(
+                                          color: Colors.black54
+                                      ),),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }else{
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height:message.doc_id != "0"
-                                  ?200:100,
-                              width: MediaQuery.of(context).size.width/1.2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 5,),
-                                  message.doc_id != "0"
-                                      ?GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Voir_plus(message: message.message, date: message.send_date, document: imageUrl,)));
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width/1.25,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          image: DecorationImage(
-                                              image: NetworkImage(imageUrl!),
-                                              fit: BoxFit.cover
-                                          )),
-                                    ),
-                                  )
-                                      :Container(),
-                                  Text(message.message,style: TextStyle(
-                                      color: Colors.black54
-                                  ),),
-                                  Text(message.send_date,style: TextStyle(
-                                      color: Colors.black54
-                                  ),),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                );
-              }
-            },
-          ),),
+                            ],
+                          );
+                        }
+                      },
+                    );
+                  }
+                },
+              ),),
+          ],
+        ),
       ),
     );
   }
