@@ -43,6 +43,24 @@ class _Details_CommandeState extends State<Details_Commande> {
     }
   }
 
+  void _launchMessenger(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Impossible d\'ouvrir Messenger : $url';
+    }
+  }
+
+
+  void _launchCall(String phoneNumber) async {
+    if (await canLaunch(phoneNumber)) {
+      await launch(phoneNumber);
+    } else {
+      throw 'Impossible de lancer l\'appel : $phoneNumber';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,16 +85,16 @@ class _Details_CommandeState extends State<Details_Commande> {
                 ],
               ),
               SizedBox(width: 15,),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.black), // Définit la couleur de fond à noir
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Supprime les bordures
-                    ),
-                  ),
-                ),
-                onPressed: () async {
+              //ElevatedButton(
+               // style: ButtonStyle(
+                  //backgroundColor: MaterialStateProperty.all<Color>(Colors.black), // Définit la couleur de fond à noir
+                  //shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    //RoundedRectangleBorder(
+                      //borderRadius: BorderRadius.circular(10), // Supprime les bordures
+                    //),
+                  //),
+                //),
+                //onPressed: () async {
                   // // Récupérer les items du panier
                   // List<CartItem> cartItems = widget.cart.items;
                   //
@@ -138,22 +156,27 @@ class _Details_CommandeState extends State<Details_Commande> {
                   //     ),
                   //   );
                   // }
-                }, child: null,
+                //}, child: null,
 
-              ),
-              SizedBox(width: 10,),
-              ElevatedButton(onPressed: () async {
-                final phone = '+24162704058'; // Remplacez par le numéro de téléphone auquel vous souhaitez envoyer un message WhatsApp
-                final url = 'https://wa.me/$phone';
-
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  // Gérer le cas où l'ouverture de WhatsApp échoue
-                  print('Impossible d\'ouvrir WhatsApp');
-                  }
+              //),
+              SizedBox(
+                width: 75, // Largeur souhaitée en pixels
+                height: 60, // Hauteur souhaitée en pixels
+                child: ElevatedButton(
+                  onPressed: () {
+                    _launchCall('tel:+24162704058');
                   },
-                child: Text('Ouvrir WhatsApp'),)
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // Aligner l'icône et le texte au centre
+                    children: <Widget>[
+                      Icon(Icons.call), // Ici, vous pouvez utiliser l'icône d'appel téléphonique ou une autre icône de votre choix
+                      //SizedBox(width: 8), // Espace entre l'icône et le texte
+                      //Text('Appeler'),
+                    ],
+                  ),
+                ),
+              ),
+
             ],
           ),
         ),

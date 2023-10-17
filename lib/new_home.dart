@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/AllProduit.dart';
 import 'package:untitled/Produit_categories.dart';
 import 'package:untitled/Recherche.dart';
@@ -115,7 +116,20 @@ class _BoutiqueState extends State<Boutique> {
 
   int _selectedIndex = 0;
 
+  int? userId;
 
+  void session() async{
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt('userId');
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,24 +223,12 @@ class _BoutiqueState extends State<Boutique> {
               leading: Icon(Icons.messenger),
               title: Text('Message'),
               onTap: () {
+                session();
                 Navigator.pop(context); // Ferme le menu
-                //Navigator.push(
-                  //context,
-                 // MaterialPageRoute(builder: (context) => Messagerie()),
-               // ); // Navigue vers la page des commandes
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Messagerie(send_id: userId, receive_id: 3, nom_amie: "Gerant",)));// Navigue vers la page des commandes
               },
             ),
-            ListTile(
-              leading: Icon(Icons.heart_broken),
-              title: Text('Like'),
-              onTap: () {
-                Navigator.pop(context); // Ferme le menu
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AutrePage()),
-                ); // Navigue vers la page des commandes
-              },
-            ),
+
           ],
         ),
       ),
@@ -510,3 +512,6 @@ class _BoutiqueState extends State<Boutique> {
     );
   }
 }
+
+
+

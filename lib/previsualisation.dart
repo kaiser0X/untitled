@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Messenger.dart';
 
+
 class Previsualiser extends StatefulWidget {
-  var nom_doc, chemin_doc, nom_amie, receive_id;
+  var nom_doc, chemin_doc, nom_amie, receive_id, send_id;
   final bool isImage;
-  Previsualiser({this.nom_doc, this.chemin_doc, required this.isImage, this.nom_amie,  this.receive_id});
+  Previsualiser({this.nom_doc, this.chemin_doc, required this.isImage, this.nom_amie,  this.receive_id, this.send_id});
 
   @override
   State<Previsualiser> createState() => _PrevisualiserState();
@@ -18,10 +18,6 @@ class _PrevisualiserState extends State<Previsualiser> {
   String selectedFileName = '';
   String? filePath;
   int? uploadedFileId;
-  int? userId = 0;
-  String? Pseudo = '';
-  String? Email = '';
-  String? Telephone = '';
 
   Future<void> uploadFile() async {
     if (widget.chemin_doc != null) {
@@ -57,22 +53,12 @@ class _PrevisualiserState extends State<Previsualiser> {
     }
   }
 
-  void session() async{
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getInt('userId');
-      Pseudo = prefs.getString('userPseudo');
-      Email = prefs.getString('userEmail');
-      Telephone = prefs.getString('userTelephone');
-    });
-  }
-
   void Send_message(doc_id) async{
     var url = 'http://karlmichel.alwaysdata.net/api.php';
 
     var response = await http.post(Uri.parse(url), body: {
       'click': 'send_message',
-      'send_id': userId,
+      'send_id': widget.send_id.toString(),
       'receive_id': widget.receive_id.toString(),
       'message': message.text,
       'doc_id': doc_id.toString()
@@ -92,7 +78,6 @@ class _PrevisualiserState extends State<Previsualiser> {
   }
   @override
   Widget build(BuildContext context) {
-    session();
     return Scaffold(
       backgroundColor: Colors.white12,
       appBar: AppBar(

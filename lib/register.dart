@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'login.dart';
+import 'package:untitled/login.dart';
+import 'package:untitled/presentation.dart';
 import 'otp_verificarion.dart';
 
 class Register extends StatefulWidget {
@@ -101,7 +101,9 @@ class _RegisterState extends State<Register> {
             SizedBox(height: 30,),
             Row(
               children: [
-                IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back)),
+                IconButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Presentation()));
+                }, icon: Icon(Icons.arrow_back)),
                 SizedBox(width: 30,),
                 Text('Incrivez vous')
               ],
@@ -274,7 +276,9 @@ class _RegisterState extends State<Register> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('Avez vous deja un compte?'),
-                TextButton(onPressed: (){}, child: Text('Se connecter',style: TextStyle(
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+                }, child: Text('Se connecter',style: TextStyle(
                     color: Colors.blueAccent
                 ),))
               ],

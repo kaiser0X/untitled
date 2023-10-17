@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/register.dart';
 import 'package:untitled/reset_password.dart';
 import 'new_home.dart';
-import 'package:untitled/Profil_User.dart';
+import 'package:untitled/presentation.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -102,7 +102,9 @@ class _LoginState extends State<Login> {
             SizedBox(height: 30,),
             Row(
               children: [
-                IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back)),
+                IconButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Presentation()));
+                }, icon: Icon(Icons.arrow_back)),
                 SizedBox(width: 30,),
                 Text('Conncetez vous')
               ],
@@ -285,8 +287,8 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 80.0, // Largeur souhaitée
-                          height: 100.0, // Hauteur souhaitée
+                          width: 20.0, // Largeur souhaitée
+                          height: 20.0, // Hauteur souhaitée
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage('lib/images/facebook.png'),
